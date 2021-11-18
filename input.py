@@ -38,7 +38,7 @@ def image_input(style_model_name):
 def webcam_input(style_model_name):
     st.header("Webcam Live Feed")
     WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
-    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, flip_input=False)
+    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device='cpu' flip_input=False)
 
     class NeuralStyleTransferTransformer(VideoTransformerBase):
         _width = WIDTH
