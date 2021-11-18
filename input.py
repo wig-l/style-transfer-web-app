@@ -102,7 +102,7 @@ def webcam_input(style_model_name):
 
             # result = Image.fromarray((transferred * 255).astype(np.uint8))
             # result = img
-            return av.VideoFrame.from_image(img.resize((orig_w, orig_h)))
+            return np.asarray(img.resize((orig_w, orig_h)))
 
     ctx = webrtc_streamer(
         client_settings=ClientSettings(
