@@ -7,7 +7,8 @@ import cv2
 import imutils
 from neural_style_transfer import get_model_from_path, style_transfer
 from data import *
-
+import face_alignment
+from skimage import io
 def image_input(style_model_name):
     style_model_path = style_models_dict[style_model_name]
 
@@ -37,6 +38,7 @@ def image_input(style_model_name):
 def webcam_input(style_model_name):
     st.header("Webcam Live Feed")
     WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
+    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, flip_input=False)
 
     class NeuralStyleTransferTransformer(VideoTransformerBase):
         _width = WIDTH
@@ -78,7 +80,8 @@ def webcam_input(style_model_name):
             input = np.asarray(Image.fromarray(image).resize((self._width, int(self._width * orig_h / orig_w))))
 
             with self._model_lock:
-                transferred = style_transfer(input, self._model)
+                # transferred = style_transfer(input, self._model)
+                transferred = fa.get_landmarks(input)
 
             result = Image.fromarray((transferred * 255).astype(np.uint8))
             return np.asarray(result.resize((orig_w, orig_h)))
