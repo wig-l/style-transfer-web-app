@@ -10,7 +10,7 @@ from data import *
 import face_alignment
 import io
 import matplotlib.pyplot as plt
-
+import av
 def fig2img(fig):
     """Convert a Matplotlib figure to a PIL Image and return it"""
     buf = io.BytesIO()
@@ -98,11 +98,11 @@ def webcam_input(style_model_name):
                 plt.axis('off')
                 fig = plt.gcf()
                 img = fig2img(fig)
-                img.show()
+                # img.show()
 
             # result = Image.fromarray((transferred * 255).astype(np.uint8))
-            result = img
-            return np.asarray(result.resize((orig_w, orig_h)))
+            # result = img
+            return av.VideoFrame.from_image(img.resize((orig_w, orig_h)))
 
     ctx = webrtc_streamer(
         client_settings=ClientSettings(
