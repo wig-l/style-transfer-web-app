@@ -8,7 +8,16 @@ import imutils
 from neural_style_transfer import get_model_from_path, style_transfer
 from data import *
 import face_alignment
-from skimage import io
+import io
+import matplotlib.pyplot as plt
+
+def fig2img(fig):
+    """Convert a Matplotlib figure to a PIL Image and return it"""
+    buf = io.BytesIO()
+    fig.savefig(buf)
+    buf.seek(0)
+    img = Image.open(buf)
+    return img
 def image_input(style_model_name):
     style_model_path = style_models_dict[style_model_name]
 
@@ -38,7 +47,8 @@ def image_input(style_model_name):
 def webcam_input(style_model_name):
     st.header("Webcam Live Feed")
     WIDTH = st.sidebar.select_slider('QUALITY (May reduce the speed)', list(range(150, 501, 50)))
-    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device='cpu', flip_input=False)
+    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, device='cpu', flip_input=False, face_detector='blazeface')
+
 
     class NeuralStyleTransferTransformer(VideoTransformerBase):
         _width = WIDTH
@@ -82,8 +92,16 @@ def webcam_input(style_model_name):
             with self._model_lock:
                 # transferred = style_transfer(input, self._model)
                 transferred = fa.get_landmarks(input)
+                plt.imshow(input)
+                for detection in transferred:
+                    plt.scatter(detection[:,0], detection[:,1], 2)
+                plt.axis('off')
+                fig = plt.gcf()
+                img = fig2img(fig)
+                img.show()
 
-            result = Image.fromarray((transferred * 255).astype(np.uint8))
+            # result = Image.fromarray((transferred * 255).astype(np.uint8))
+            result = img
             return np.asarray(result.resize((orig_w, orig_h)))
 
     ctx = webrtc_streamer(
