@@ -98,6 +98,9 @@ def webcam_input(style_model_name):
                 plt.axis('off')
                 fig = plt.gcf()
                 img = fig2img(fig)
+                img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR) #PIL Jpeg to Opencv image
+                img = Image.fromarray(img.astype(np.uint8))
+
                 # img.show()
 
             # result = Image.fromarray((transferred * 255).astype(np.uint8))
